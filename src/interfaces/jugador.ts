@@ -5,5 +5,5 @@ export interface Jugador {
 
 export const JUGADOR_VACIO:Jugador = {
   nombre: "",
-  vidas: 3
+  vidas: 0
 }
