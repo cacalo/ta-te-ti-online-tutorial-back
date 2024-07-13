@@ -37,6 +37,11 @@ io.on("connection",(socket)=>{
     buscarSala(args.salaId)?.jugar(args.jugador,args.posicion)
   })
 
+  socket.on("nuevaRonda",(args)=> {
+    console.log("Viendo de empezar una nueva ronda",args, buscarSala(args.salaId))
+    buscarSala(args.salaId)?.nuevaRonda();
+  })
+
 })
 
 /** Busca una sala disponible, si la encuentra devuelve el id de la sala, y sino devuelve null */
