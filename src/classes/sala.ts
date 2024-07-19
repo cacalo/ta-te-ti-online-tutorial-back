@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { CrearSalaArgs } from "../interfaces/crearSala";
 import { JUGADOR_VACIO, Jugador } from "../interfaces/jugador";
-import { EstadoJuego, POSICION_TABLERO, SalaBackend, Tablero } from "../interfaces/sala";
+import { EstadoJuego, POSICION_TABLERO, PosicionGanadora, SalaBackend, Tablero } from "../interfaces/sala";
 
 export class Sala {
   publica: boolean;
@@ -10,6 +10,7 @@ export class Sala {
   socket: Socket
   jugadorInicial: 0|1 = 0;
   tablero:Tablero= ["","","","","","","","","",]
+  posicionGanadora?:PosicionGanadora;
 
   estado: EstadoJuego = "ESPERANDO_COMPAÑERO";
 
@@ -34,7 +35,8 @@ export class Sala {
       jugadores : this.jugadores,
       id : this.id,
       estado: this.estado,
-      tablero: this.tablero
+      tablero: this.tablero,
+      posicionGanadora : this.posicionGanadora
     }
   }
 
@@ -52,7 +54,7 @@ export class Sala {
     if((numeroJugador !== 1 && this.estado === "TURNO_P1") ||  
       (numeroJugador !== 2 && this.estado === "TURNO_P2")) return;
     this.tablero[posicion] = numeroJugador;
-
+    this.posicionGanadora = undefined;
     //Cambio de turno
     this.estado = this.estado === "TURNO_P1" ? "TURNO_P2" : "TURNO_P1";
 
@@ -65,8 +67,10 @@ export class Sala {
       this.jugadores[indiceJugadorAfectado].vidas--;
       if(this.jugadores[indiceJugadorAfectado].vidas === 0){
         this.estado = numeroJugador === 1? "VICTORIA_FINAL_P1" : "VICTORIA_FINAL_P2";
+        this.posicionGanadora = fin;
       } else {
         this.estado = numeroJugador === 1? "VICTORIA_P1" : "VICTORIA_P2";
+        this.posicionGanadora = fin;
       }
 
     }
@@ -74,18 +78,18 @@ export class Sala {
     this.comunicarSala();
   }
 
-  verificarVictoria():[number,number,number] | "EMPATE" | undefined{
+  verificarVictoria(): PosicionGanadora | "EMPATE" | undefined{
     //Verificar las líneas horizonatales
     for (let i = 0; i < 3; i+=3) {
       if(this.tablero[i]!== "" && this.tablero[i] === this.tablero[i+1] && this.tablero[i] === this.tablero[i+2]){
-        return [i,i+1,i+2]
+        return [i as POSICION_TABLERO,i+1 as POSICION_TABLERO,i+2 as POSICION_TABLERO]
       }
     }
 
     //Verificar las líneas verticales
     for (let i = 0; i < 3; i++) {
       if(this.tablero[i]!== "" && this.tablero[i] === this.tablero[i+3] && this.tablero[i] === this.tablero[i+6]){
-        return [i,i+3,i+6]
+        return [i as POSICION_TABLERO,i+3 as POSICION_TABLERO,i+6 as POSICION_TABLERO]
       }
     }
     
@@ -107,6 +111,7 @@ export class Sala {
     console.log("Renovando la ronda");
     this.vaciarTablero();
     this.cambiarJugadorInicial();
+    this.posicionGanadora = undefined;
     this.estado = this.jugadorInicial === 0 ? "TURNO_P1" : "TURNO_P2";
     if(this.jugadores[0].vidas === 0 || this.jugadores[1].vidas === 0 ){
       this.jugadores[0].vidas = 3;

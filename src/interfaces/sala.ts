@@ -1,6 +1,7 @@
 import { Jugador } from "./jugador"
 
-export type EstadoJuego = "ESPERANDO_COMPAÑERO" |
+export type EstadoJuego = 
+"ESPERANDO_COMPAÑERO" |
 "TURNO_P1" |
 "TURNO_P2" |
 "VICTORIA_P1" |
@@ -16,8 +17,10 @@ export interface SalaBackend {
   id : number
   estado: EstadoJuego,
   tablero:Tablero
+  posicionGanadora: PosicionGanadora | undefined
 }
 
 export type POSICION_TABLERO = 0|1|2|3|4|5|6|7|8;
 export type Tablero = [NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|"",NumeroJugador|""];
-export type NumeroJugador = 1|2
+export type NumeroJugador = 1|2;
+export type PosicionGanadora = [POSICION_TABLERO,POSICION_TABLERO,POSICION_TABLERO];
