@@ -2,12 +2,13 @@
   "name": "backend-ta-te-ti",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec npx tsx src/index.ts",
     "build": "tsc --build",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "install-build": "npm install && npm run build"
   },
   "author": "Gonzalo Bechara Baladi",
   "license": "ISC",
