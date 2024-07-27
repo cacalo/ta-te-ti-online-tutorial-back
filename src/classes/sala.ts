@@ -7,7 +7,7 @@ export class Sala {
   jugadores: [Jugador,Jugador] = [{...JUGADOR_VACIO},{...JUGADOR_VACIO}];
   id?: number
   jugadorInicial: 0|1 = 0;
-  tablero:Tablero= ["","","","","","","","","",]
+  tablero:Tablero= ["","","","","","","","",""];
   posicionGanadora?:PosicionGanadora;
 
   estado: EstadoJuego = "ESPERANDO_COMPAÑERO";
@@ -57,7 +57,7 @@ export class Sala {
 
     //Verificación victoria o empate
     const fin = this.verificarVictoria();
-    //console.log("Verificando victoria",fin)
+    console.log("Verificando victoria",fin)
     if (fin === "EMPATE") this.estado = "EMPATE";
     else if (typeof fin === "object") {
       const indiceJugadorAfectado = numeroJugador === 1 ? 1 : 0;
@@ -76,8 +76,8 @@ export class Sala {
   }
 
   verificarVictoria(): PosicionGanadora | "EMPATE" | undefined{
-    //Verificar las líneas horizonatales
-    for (let i = 0; i < 3; i+=3) {
+    //Verificar las líneas horizontales
+    for (let i = 0; i < 9; i+=3) {
       if(this.tablero[i]!== "" && this.tablero[i] === this.tablero[i+1] && this.tablero[i] === this.tablero[i+2]){
         return [i as PosicionTablero,i+1 as PosicionTablero,i+2 as PosicionTablero]
       }
