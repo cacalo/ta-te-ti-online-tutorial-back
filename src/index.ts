@@ -3,14 +3,16 @@ import { createServer } from 'node:http';
 import { Server, Socket } from 'socket.io';
 import { Sala } from './classes/sala';
 import { CrearSalaArgs, UnirseASalaArgs } from './interfaces/crearSala';
+import { config } from 'dotenv';
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server,{cors:{origin:"*"}});
 global.io = io;
+config();
 
-server.listen(3000, ()=> {
-  console.log("Server escuchando en el puerto 3000");
+server.listen(process.env.PORT || 3000, ()=> {
+  console.log("Server escuchando en el puerto", process.env.PORT);
 })
 
 let salas:Sala[] = [];
