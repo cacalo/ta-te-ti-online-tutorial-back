@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec npx tsx src/index.ts",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "tsc": "tsc"
   },
   "author": "Gonzalo Bechara Baladi",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "tsx": "^4.15.1",
     "typescript": "^5.4.5"
   },

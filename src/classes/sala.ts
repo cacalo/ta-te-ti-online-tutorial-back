@@ -1,22 +1,19 @@
-import { Socket } from "socket.io";
 import { CrearSalaArgs } from "../interfaces/crearSala";
 import { JUGADOR_VACIO, Jugador } from "../interfaces/jugador";
-import { EstadoJuego, POSICION_TABLERO, PosicionGanadora, SalaBackend, Tablero } from "../interfaces/sala";
+import { EstadoJuego, PosicionTablero, PosicionGanadora, SalaBackend, Tablero, NumeroJugador } from "../interfaces/sala";
 
 export class Sala {
   publica: boolean;
   jugadores: [Jugador,Jugador] = [{...JUGADOR_VACIO},{...JUGADOR_VACIO}];
-  id: number
-  socket: Socket
+  id?: number
   jugadorInicial: 0|1 = 0;
   tablero:Tablero= ["","","","","","","","","",]
   posicionGanadora?:PosicionGanadora;
 
   estado: EstadoJuego = "ESPERANDO_COMPAÑERO";
 
-  constructor(args:CrearSalaArgs, socket:Socket){
+  constructor(args:CrearSalaArgs){
     this.publica = args.publica;
-    this.socket = socket;
   }
 
   agregarJugador(nombre: string){
@@ -33,7 +30,7 @@ export class Sala {
     return {
       publica : this.publica,
       jugadores : this.jugadores,
-      id : this.id,
+      id : this.id!,
       estado: this.estado,
       tablero: this.tablero,
       posicionGanadora : this.posicionGanadora
@@ -50,7 +47,7 @@ export class Sala {
     this.comunicarSala();
   }
 
-  jugar(numeroJugador:1|2,posicion:POSICION_TABLERO){
+  jugar(numeroJugador:NumeroJugador,posicion:PosicionTablero){
     if((numeroJugador !== 1 && this.estado === "TURNO_P1") ||  
       (numeroJugador !== 2 && this.estado === "TURNO_P2")) return;
     this.tablero[posicion] = numeroJugador;
@@ -60,7 +57,7 @@ export class Sala {
 
     //Verificación victoria o empate
     const fin = this.verificarVictoria();
-    console.log("Verificando victoria",fin)
+    //console.log("Verificando victoria",fin)
     if (fin === "EMPATE") this.estado = "EMPATE";
     else if (typeof fin === "object") {
       const indiceJugadorAfectado = numeroJugador === 1 ? 1 : 0;
@@ -82,14 +79,14 @@ export class Sala {
     //Verificar las líneas horizonatales
     for (let i = 0; i < 3; i+=3) {
       if(this.tablero[i]!== "" && this.tablero[i] === this.tablero[i+1] && this.tablero[i] === this.tablero[i+2]){
-        return [i as POSICION_TABLERO,i+1 as POSICION_TABLERO,i+2 as POSICION_TABLERO]
+        return [i as PosicionTablero,i+1 as PosicionTablero,i+2 as PosicionTablero]
       }
     }
 
     //Verificar las líneas verticales
     for (let i = 0; i < 3; i++) {
       if(this.tablero[i]!== "" && this.tablero[i] === this.tablero[i+3] && this.tablero[i] === this.tablero[i+6]){
-        return [i as POSICION_TABLERO,i+3 as POSICION_TABLERO,i+6 as POSICION_TABLERO]
+        return [i as PosicionTablero,i+3 as PosicionTablero,i+6 as PosicionTablero]
       }
     }
     
@@ -108,7 +105,7 @@ export class Sala {
   }
   
   nuevaRonda(){
-    console.log("Renovando la ronda");
+    //console.log("Renovando la ronda");
     this.vaciarTablero();
     this.cambiarJugadorInicial();
     this.posicionGanadora = undefined;
