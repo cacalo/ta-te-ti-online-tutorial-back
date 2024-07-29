@@ -11,8 +11,9 @@ const io = new Server(server,{cors:{origin:"*"}});
 global.io = io;
 config();
 
-server.listen(process.env.PORT || 3000, ()=> {
-  console.log("Server escuchando en el puerto", process.env.PORT);
+const puerto = process.env.PORT || 3000;
+server.listen(puerto, ()=> {
+  console.log("Server escuchando en el puerto", puerto);
 })
 
 let salas:Sala[] = [];
